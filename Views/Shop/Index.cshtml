@@ -43,11 +43,11 @@
         <!-- TOP HEADER -->
         <div id="top-header">
             <div class="container">
-                <ul class="header-links pull-left">
-                    <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
-                    <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
-                    <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
-                </ul>
+                @*<ul class="header-links pull-left">
+                        <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
+                        <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
+                        <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+                    </ul>*@
                 <ul class="header-links pull-right">
                     <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
                     <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
@@ -73,14 +73,11 @@
                     <!-- SEARCH BAR -->
                     <div class="col-md-6">
                         <div class="header-search">
-                            <form>
-                                <select class="input-select">
-                                    <option value="0">All Categories</option>
-                                    <option value="1">Category 01</option>
-                                    <option value="1">Category 02</option>
+                            <form onsubmit="buscaProductos()">
+                                <select class="input-select" id="categoriaSelect">
                                 </select>
-                                <input class="input" placeholder="Search here">
-                                <button class="search-btn">Search</button>
+                                <input class="input" placeholder="Buscar" id="inputCategoria">
+                                <button class="search-btn" type="submit">Buscar</button>
                             </form>
                         </div>
                     </div>
@@ -90,13 +87,13 @@
                         <div class="header-ctn">
                             <!-- Cart -->
                             <div class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" onclick="getProductosCarrito()">
                                     <i class="fa fa-shopping-cart"></i>
-                                    <span>Your Cart</span>
-                                    <div class="qty">3</div>
+                                    <span>Carrito</span>
+                                    <div class="qty" id="contadorProducto">0</div>
                                 </a>
                                 <div class="cart-dropdown">
-                                    <div class="cart-list">
+                                    <div class="cart-list" id="carrito">
                                         <div class="product-widget">
                                             <div class="product-img">
                                                 <img src="~/shop/img/product01.png" alt="">
@@ -108,24 +105,24 @@
                                             <button class="delete"><i class="fa fa-close"></i></button>
                                         </div>
 
-                                        <div class="product-widget">
-                                            <div class="product-img">
-                                                <img src="~/shop/img/product02.png" alt="">
-                                            </div>
-                                            <div class="product-body">
-                                                <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                                                <h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
-                                            </div>
-                                            <button class="delete"><i class="fa fa-close"></i></button>
-                                        </div>
+                                        @*<div class="product-widget">
+                                                <div class="product-img">
+                                                    <img src="~/shop/img/product02.png" alt="">
+                                                </div>
+                                                <div class="product-body">
+                                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                                    <h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
+                                                </div>
+                                                <button class="delete"><i class="fa fa-close"></i></button>
+                                            </div>*@
                                     </div>
                                     <div class="cart-summary">
-                                        <small>3 Item(s) selected</small>
-                                        <h5>SUBTOTAL: $2940.00</h5>
+                                        @*<small>3 Item(s) selected</small>*@
+                                        <h5 id="totalProducto">SUBTOTAL: $0</h5>
                                     </div>
                                     <div class="cart-btns">
-                                        <a href="#">View Cart</a>
-                                        <a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+                                        @*<a href="#">View Cart</a> obtieneTotal(1)*@
+                                        <a href="#" onclick="getDatosCliente()">Procesar  <i class="fa fa-arrow-circle-right"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -157,13 +154,13 @@
             <div id="responsive-nav">
                 <!-- NAV -->
                 <ul class="main-nav nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#">Hot Deals</a></li>
-                    <li><a href="#">Categories</a></li>
-                    <li><a href="#">Laptops</a></li>
-                    <li><a href="#">Smartphones</a></li>
-                    <li><a href="#">Cameras</a></li>
-                    <li><a href="#">Accessories</a></li>
+                    <li class="active"><a href="#">Inicio</a></li>
+                    @*<li><a href="#">Hot Deals</a></li>
+                        <li><a href="#">Categories</a></li>
+                        <li><a href="#">Laptops</a></li>
+                        <li><a href="#">Smartphones</a></li>
+                        <li><a href="#">Cameras</a></li>
+                        <li><a href="#">Accessories</a></li>*@
                 </ul>
                 <!-- /NAV -->
             </div>
@@ -246,7 +243,7 @@
                 <!-- STORE -->
                 <div id="store" class="col-md-9">
                     <!-- store products -->
-                    <div class="row">
+                    <div class="row" id="productos">
                         <!-- product -->
                         <div class="col-md-4 col-xs-6">
                             <div class="product">
@@ -272,6 +269,60 @@
                 <!-- /STORE -->
             </div>
             <!-- /row -->
+            <!-- Large modal -->
+            @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>*@
+
+            <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="miModal">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Datos de facturación</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Ingrese los datos correspondientes:</p>
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputGroupPrependN"><strong>Nombre completo:</strong></span>
+                                        </div>
+                                        <input name='cliente'
+                                               type="text"
+                                               class="form-control"
+                                               aria-describedby="inputGroupPrependN" 
+                                               id="nombre"/>
+                                </div>
+                                <div class="form-group col-md-12">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputGroupPrependC"><strong>Correo:</strong></span>
+                                        </div>
+                                        <input name='categoria'
+                                               type="text"
+                                               class="form-control"
+                                               aria-describedby="inputGroupPrependC" 
+                                               id="correo"/>
+                                    </div>
+                                <div class="form-group col-md-12">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputGroupPrependt"><strong>Teléfono:</strong></span>
+                                        </div>
+                                        <input name="entrega"
+                                               type="text"
+                                               class="form-control"
+                                               aria-describedby="inputGroupPrependt" 
+                                               id="telefono"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="obtieneTotal(1)">Aceptar</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- /container -->
     </div>
@@ -284,14 +335,156 @@
     <script src="~/shop/js/jquery.zoom.min.js"></script>
     <script src="~/shop/js/main.js"></script>
     <script>
-                    axios.post("http://localhost:9000/GetCategoria/", "")
+        var carritoArray = [];
+        var elementosCarrito = null;
+        //SELECT DE CATEGORIA EN BUSCADOR
+        const $select = document.querySelector("#categoriaSelect");
+        const agregar = (datos) => {
+            //console.log(datos);
+            const option = document.createElement('option');
+            const valor = datos.id;
+            option.value = valor;
+            option.text = datos.nombre;
+            $select.appendChild(option);
+        };
+        const agregaCarrito = (id) => {
+            carritoArray.push(id);
+            const carritoUniqueArray = [...new Set(carritoArray)]; // myArray = [...new Set(myArray)];
+            carritoArray = carritoUniqueArray;
+            document.getElementById('contadorProducto').innerHTML = '';
+            $("#contadorProducto").append(carritoArray.length);
+        };
+        //AGREGA PRODUCTOS EN EL DIV CORRESPONDIENTES
+        const agregarProducto = (datos) => {
+            var html = "<div class='col-md-4 col-xs-6'>";
+            html += "<div class='product' >";
+            html += "<div class='product-img'>";
+            html += "<img src='~/shop/img/product09.png'></div>";
+            html += "<div class='product-body'>";
+            html += "<p class='product-category'>" + datos.categoria + "</p>";
+            html += "<h3 class='product-name'><a>" + datos.nombre + "</a></h3>";
+            html += "<h4 class='product-price'>$" + datos.precio + "</h4>"
+            html += "<div class='product-rating'></div>";
+            html += "</div><div class='add-to-cart'>";
+            html += "<button class='add-to-cart-btn' onClick='agregaCarrito(" + datos.id + ")'><i class='fa fa-shopping-cart'></i> Agregar al carro</button></div>";
+            html += "</div></div>";
+            $("#productos").append(html);
+        };
+        const agregarHtmlCarrito = (datos) => {
+            console.log(datos);
+            var html = "";
+            html += "<div class='product-widget'><div class='product-img'><img src='" + datos.imagen + "' alt=''></div><div class='product-body'>";
+            html += "<h3 class='product-name'><a href='#'>" + datos.nombre + "</a></h3>";
+            //html += "<div class='qty-label'>Cant<div class='input-number'><input type='number'><span class='qty-up'>+</span><span class='qty-down'>-</span></div></div><h4 class='product-price'>$" + datos.precio + "</h4></div>";
+            html += "<div class='qty-label'>Cant<div class='input-number'><input type='number' name='productosCarrito[]' onChange='obtieneTotal(0)'></div></div><h4 class='product-price'>Cant Max: " + datos.cantidad + "</h4></div>";
+            html += "<h4 class='product-price'>Precio: $" + datos.precio + "</h4>";
+            html += "<button class='delete' onClick='deleteProductoCarrito(" + datos.id + ")'><i class='fa fa-close'></i></button></div>";
+            $("#carrito").append(html);
+        }
+        const deleteProductoCarrito = (id) => {
+            var index = carritoArray.indexOf(id);
+            if (index > -1) {
+                carritoArray.splice(index, 1);
+            }
+            document.getElementById('contadorProducto').innerHTML = '';
+            $("#contadorProducto").append(carritoArray.length);
+            getProductosCarrito();
+        };
+        const obtieneTotal = (flag) => {
+            var ids = [];
+            var cantidad = [];
+            var precioTotal = 0;
+            var elemento = null;
+            var incCount = document.getElementsByName("productosCarrito[]").length;
+            for (i = 0; i < incCount; i++) {
+                elemento = document.getElementsByName("productosCarrito[]")[i].value;
+                if (document.getElementsByName("productosCarrito[]")[i].value.length == 0) {
+                    precioTotal += elemento * 0;
+                }
+                else {
+                    precioTotal += elemento * elementosCarrito[i].precio;
+                    ids.push(elementosCarrito.id);
+                    cantidad.push(elemento);
+                }
+            };
+            if (flag == 1) {
+                var obj = new Object();
+                obj.id = ids.join();
+                obj.cantidad = cantidad.join();
+                obj.nombre = $("#nombre").val();
+                obj.correo = $("#correo").val();
+                obj.telefono=$("#telefono").val();
+                axios.post("http://localhost:9000/Pago/", obj)
+                    .then(response => {
+                        var datos = response.data;
+                        //for (var elemento in elementosCarrito) {
+                        //    agregarHtmlCarrito(elementosCarrito[elemento]);
+                        //}
+                    })
+                    .catch(error => console.log(error));
+            }
+            $('#totalProducto').text('SUBTOTAL: $' + precioTotal)
+            //console.log(precioTotal);
+            //elementosCarrito;
+        };
+        const getDatosCliente = () => {
+            $("#miModal").modal("show");
+        }
+        //OBTIENE TODOS LOS PRODUCTOS SELECCIONADOS EN EL CARRITO.
+        const getProductosCarrito = () => {
+            //$("#carrito").remove();
+            document.getElementById('carrito').innerHTML = '';
+            var obj = new Object();
+            obj.id = carritoArray.join();
+            axios.post("http://localhost:9000/GetCarrito/", obj)
+                .then(response => {
+                    elementosCarrito = response.data;
+                    for (var elemento in elementosCarrito) {
+                        agregarHtmlCarrito(elementosCarrito[elemento]);
+                    }
+                })
+                .catch(error => console.log(error));
+        };
+        //BUSCA LOS PRODUCTOS MEDIANTE EL INPUT DE SEARCH
+        const buscaProductos = () => {
+            event.preventDefault();
+            document.getElementById('productos').innerHTML = '';
+            var val = $("#categoriaSelect option:selected").val();
+            var input = $("#inputCategoria").val();
+            var obj = new Object();
+            obj.id = val;
+            obj.nombre = input;
+            axios.post("http://localhost:9000/BuscaProducto/", obj)
+                .then(response => {
+                    const datosC = response.data;
+                    for (var elemento in datosC) {
+                        agregarProducto(datosC[elemento]);
+                    }
+                })
+                .catch(error => console.log(error));
+        };
+        $(window).load(function () {
+            //OBTIENE TODAS LAS CATEGORIAS.
+            axios.post("http://localhost:9000/GetCategoria/", "{sede:'cartago'}")
+                .then(response => {
+                    const datosC = response.data;
+                    for (var elemento in datosC) {
+                        agregar(datosC[elemento]);
+                    }
+                })
+                .catch(error => console.log(error));
+            //OBTIENE 10 PRODUCTOS EN INVENTARIO.
+            axios.post("http://localhost:9000/GetTop10Producto/", "")
                 .then(response => {
                     const datosC = response.data;
                     //setCustomers(cust => datosC);
                     console.log(datosC);
-
+                    for (var elemento in datosC) {
+                        agregarProducto(datosC[elemento]);
+                    }
                 })
                 .catch(error => console.log(error));
+        });
     </script>
 
 </body>
