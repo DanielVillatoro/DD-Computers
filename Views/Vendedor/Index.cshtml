@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Vendedor</title>
+    <link rel="stylesheet" type="text/css" href="~/login/vendor/bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                @*<img src="http://placehold.it/150x50?text=Logo" alt="">*@
+                <h3 class="nav-link">ComputersDD</h3>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" asp-controller="Vendedor" asp-action="Index">
+                            Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Vendedor" asp-action="Categoria">Categorías</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Vendedor" asp-action="Producto">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Vendedor" asp-action="Inventario">Inventario</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Vendedor" asp-action="Factura">Facturado</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+        <h1 class="mt-4">Inicio</h1>
+        @*<p>The logo in the navbar is now a default Bootstrap feature in Bootstrap 4! Make sure to set the width and height of the logo within the HTML or with CSS. For best results, use an SVG image as your logo.</p>*@
+    </div>
+    <!-- /.container -->
+    <script src="~/login/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="~/login/vendor/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
