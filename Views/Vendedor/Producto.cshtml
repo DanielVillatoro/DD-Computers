@@ -2,7 +2,13 @@
 <html>
 <head>
     <title>Vendedor</title>
-    <link rel="stylesheet" type="text/css" href="~/login/vendor/bootstrap/css/bootstrap.min.css">
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -41,13 +47,79 @@
 
     <!-- Page Content -->
     <div class="container">
-        <h1 class="mt-4">Producto</h1><div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon3">Agregar categoría: </span>
+        <h1 class="mt-4">Producto</h1>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupPrependProducto"><strong>Producto:</strong></span>
+                    </div>
+                    <input type="text"
+                           class="form-control"
+                           id="producto"
+                           aria-describedby="inputGroupPrependProducto" />
+                </div>
             </div>
-            <input type="text" class="form-control" id="inputProducto" aria-describedby="basic-addon3">
-            <button class="btn btn-outline-secondary" onclick="agregar()">Agregar</button>
+            <div class="form-group col-md-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupPrependCategoria"><strong>Categoría:</strong></span>
+                    </div>
+                    <select class="form-control" id="categoria" aria-describedby="inputGroupPrependCategoria">
+                        <option>Seleccionar</option>
+                        @*<option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>*@
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupPrependPrecio"><strong>Precio:</strong></span>
+                    </div>
+                    <input id="precio"
+                           type="number"
+                           class="form-control"
+                           aria-describedby="inputGroupPrependPrecio" />
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupPrependCodigo"><strong>Codigo:</strong></span>
+                    </div>
+                    <input id="codigo"
+                           type="text"
+                           class="form-control"
+                           aria-describedby="inputGroupPrependCodigo" />
+                </div>
+            </div>
         </div>
+        <div class="form-row">
+            <div class="form-group col-md-10">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupPrependimagen"><strong>Imagen:</strong></span>
+                    </div>
+                    <input type="text"
+                           class="form-control"
+                           id="imagen"
+                           aria-describedby="inputGroupPrependimagen" />
+                </div>
+            </div>
+            <div class="form-group col-md-1">
+                <button class="btn btn-outline-secondary" onclick="agregar()">Agregar</button>
+            </div>
+        </div>
+        @*<div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">Agregar categoría: </span>
+                </div>
+                <input type="text" class="form-control" id="inputProducto" aria-describedby="basic-addon3">
+                <button class="btn btn-outline-secondary" onclick="agregar()">Agregar</button>
+            </div>*@
         <div class="table-responsive">
             <table class="table table-hover" id="myTable">
                 <thead>
@@ -57,6 +129,7 @@
                         <th scope="col">Precio</th>
                         <th scope="col">Imagen</th>
                         <th scope="col">Código</th>
+                        <th scope="col">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="bodyTable">
@@ -72,15 +145,20 @@
     <script src="~/js/fontawesome.js"></script>
     <script>
         const guardarCambio = (id) => {
-            var idCambio = id;
-            id = "#input" + id;
-            var valor = $(id).val();
-            console.log(id);
-            console.log(valor);
+            //id = "#input" + id;
+            var nombre = $("#nombre"+id).val();
+            var idCategoria = 1;
+            var precio = $("#precio"+id).val();
+            var imagen = $("#imagen"+id).val();
+            var codigo = $("#codigo"+id).val();
             var obj = new Object();
-            obj.id = idCambio;
-            obj.nombre = valor;
-            axios.post("http://localhost:9000/UpdateCategoria/", obj)
+            obj.id = id;
+            obj.idCategoria = idCategoria;
+            obj.nombre = nombre;
+            obj.precio = precio;
+            obj.imagen = imagen;
+            obj.codigo = codigo;
+            axios.post("http://localhost:9000/UpdateProducto/", obj)
                 .then(response => {
                     alertify.success("Dato cambiado correctamente.");
                     setTimeout('recargar()', 3000);
@@ -90,20 +168,20 @@
         $(window).load(function () {
             //console.log('1212');
             //OBTIENE TODAS LAS CATEGORIAS.
-            axios.post("http://localhost:9000/GetCategoria/", "")
+            axios.post("http://localhost:9000/GetProducto/", "")
                 .then(response => {
                     const datosC = response.data;
                     var html = "";
                     for (var elemento in datosC) {
-                        html += "<tr><td><input type='text' class='form-control' id='input" + datosC[elemento].id + "' value='" + datosC[elemento].nombre + "'></td>";
+                        html += "<tr><td><input type='text' class='form-control' id='nombre" + datosC[elemento].id + "' value='" + datosC[elemento].nombre + "'></td>";
+                        html += "<td><input type='text' class='form-control' id='categoria" + datosC[elemento].id + "' value='" + datosC[elemento].categoria + "'></td>";
+                        html += "<td><input type='number' class='form-control' id='precio" + datosC[elemento].id + "' value='" + datosC[elemento].precio + "'></td>";
+                        html += "<td><input type='text' class='form-control' id='imagen" + datosC[elemento].id + "' value='" + datosC[elemento].imagen + "'></td>";
+                        html += "<td><input type='text' class='form-control' id='codigo" + datosC[elemento].id + "' value='" + datosC[elemento].codigo + "'></td>";
                         html += "<td><button class='btn btn-primary' id='" + datosC[elemento].id + "' onclick='guardarCambio(this.id)'>Guardar</button></td></tr > ";
                         //html += "<tr><td>" + datosC[elemento].nombre + "</td><td><a id='" + datosC[elemento].id + "'nombre='" + datosC[elemento].nombre + "' class='btn btn-primary' onclick='getDatos(this); return false;'><span class='fas fa-edit' aria-hidden='true'></span></a></td></tr>";
                     }
                     $("#bodyTable").html(html);
-                    //for (var elemento in datosC) {
-                    //    var id = "input" + id;
-                    //    $(id).val(datosC[elemento].nombre);
-                    //}
                     $('#myTable').DataTable({
                         destroy: true,
                         "language": {
@@ -117,12 +195,29 @@
                     });
                 })
                 .catch(error => console.log(error));
+            //OBTIENE TODAS LAS CATEGORIAS.
+            axios.post("http://localhost:9000/GetCategoria/", "{sede:'cartago'}")
+                .then(response => {
+                    const datosC = response.data;
+                    for (var elemento in datosC) {
+                        agregarSelect(datosC[elemento]);
+                    }
+                })
+                .catch(error => console.log(error));
         });
         const agregar = () => {
-            var valor = $("#inputProducto").val();
+            var idCategoria = $("#categoria option:selected").val();
+            var nombre = $("#producto").val();
+            var precio = $("#precio").val();
+            var imagen = $("#imagen").val();
+            var codigo = $("#codigo").val();
             var obj = new Object();
-            obj.nombre = valor;
-            axios.post("http://localhost:9000/CreaCategoria/", obj)
+            obj.idCategoria = idCategoria;
+            obj.nombre = nombre;
+            obj.precio = precio;
+            obj.imagen = imagen;
+            obj.codigo = codigo;
+            axios.post("http://localhost:9000/CreaProducto/", obj)
                 .then(response => {
                     alertify.success("Dato agregado correctamente.");
                     setTimeout('recargar()', 3000);
@@ -133,6 +228,15 @@
         const recargar = () => {
             location.reload();
         }
+        const $select = document.querySelector("#categoria");
+        const agregarSelect = (datos) => {
+            //console.log(datos);
+            const option = document.createElement('option');
+            const valor = datos.id;
+            option.value = valor;
+            option.text = datos.nombre;
+            $select.appendChild(option);
+        };
     </script>
 </body>
 </html>

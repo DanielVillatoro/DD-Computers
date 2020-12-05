@@ -88,7 +88,12 @@
                     const datosC = response.data;
                     if (datosC.length > 0) {
                         console.log('entra')
-                        window.location.href = "/Vendedor/Index";
+                        if (datosC[0].tipo == 1) {
+                            window.location.href = "/Vendedor/Index";
+                        }
+                        else {
+                            window.location.href = "/Corporativo/Index";
+                        }
                     }
                 })
                 .catch(error => console.log(error));
