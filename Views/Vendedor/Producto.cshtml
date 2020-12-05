@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@using System.Data;
+<!DOCTYPE html>
 <html>
 <head>
     <title>Vendedor</title>
@@ -144,13 +146,14 @@
     <script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
     <script src="~/js/fontawesome.js"></script>
     <script>
+        var sede = @Context.Session.GetString("sede");
         const guardarCambio = (id) => {
             //id = "#input" + id;
-            var nombre = $("#nombre"+id).val();
+            var nombre = $("#nombre" + id).val();
             var idCategoria = 1;
-            var precio = $("#precio"+id).val();
-            var imagen = $("#imagen"+id).val();
-            var codigo = $("#codigo"+id).val();
+            var precio = $("#precio" + id).val();
+            var imagen = $("#imagen" + id).val();
+            var codigo = $("#codigo" + id).val();
             var obj = new Object();
             obj.id = id;
             obj.idCategoria = idCategoria;
@@ -158,6 +161,7 @@
             obj.precio = precio;
             obj.imagen = imagen;
             obj.codigo = codigo;
+            obj.sede = sede;
             axios.post("http://localhost:9000/UpdateProducto/", obj)
                 .then(response => {
                     alertify.success("Dato cambiado correctamente.");
@@ -166,9 +170,11 @@
                 .catch(error => console.log(error));
         };
         $(window).load(function () {
+            var obj = new Object();
+            obj.sede = sede;
             //console.log('1212');
             //OBTIENE TODAS LAS CATEGORIAS.
-            axios.post("http://localhost:9000/GetProducto/", "")
+            axios.post("http://localhost:9000/GetProducto/", obj)
                 .then(response => {
                     const datosC = response.data;
                     var html = "";
@@ -196,7 +202,7 @@
                 })
                 .catch(error => console.log(error));
             //OBTIENE TODAS LAS CATEGORIAS.
-            axios.post("http://localhost:9000/GetCategoria/", "{sede:'cartago'}")
+            axios.post("http://localhost:9000/GetCategoria/", obj)
                 .then(response => {
                     const datosC = response.data;
                     for (var elemento in datosC) {
@@ -217,6 +223,7 @@
             obj.precio = precio;
             obj.imagen = imagen;
             obj.codigo = codigo;
+            obj.sede = sede;
             axios.post("http://localhost:9000/CreaProducto/", obj)
                 .then(response => {
                     alertify.success("Dato agregado correctamente.");

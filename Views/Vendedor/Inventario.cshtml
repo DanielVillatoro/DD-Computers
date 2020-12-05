@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@using System.Data;
+<!DOCTYPE html>
 <html>
 <head>
     <title>Vendedor</title>
@@ -96,11 +98,13 @@
     <script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
     <script src="~/js/fontawesome.js"></script>
     <script>
+        var sede = @Context.Session.GetString("sede");
         const guardarCambio = (id) => {
-            var cantidad = $("#cantidad"+id).val();
+            var cantidad = $("#cantidad" + id).val();
             var obj = new Object();
             obj.id = id;
             obj.cantidad = cantidad;
+            obj.sede = sede;
             axios.post("http://localhost:9000/UpdateProductoInventario/", obj)
                 .then(response => {
                     alertify.success("Dato cambiado correctamente.");
@@ -109,14 +113,16 @@
                 .catch(error => console.log(error));
         };
         $(window).load(function () {
+            var obj = new Object();
+            obj.sede = sede;
             //console.log('1212');
             //OBTIENE TODAS LAS CATEGORIAS.
-            axios.post("http://localhost:9000/GetTodoProducto/", "")
+            axios.post("http://localhost:9000/GetTodoProducto/", obj)
                 .then(response => {
                     const datosC = response.data;
                     var html = "";
                     for (var elemento in datosC) {
-                        html += "<tr><td>"+ datosC[elemento].nombre + "</td>";
+                        html += "<tr><td>" + datosC[elemento].nombre + "</td>";
                         html += "<td><input type='number' class='form-control' id='cantidad" + datosC[elemento].id + "' value='" + datosC[elemento].cantidad + "'></td>";
                         html += "<td><button class='btn btn-primary' id='" + datosC[elemento].id + "' onclick='guardarCambio(this.id)'>Guardar</button></td></tr > ";
                         //html += "<tr><td>" + datosC[elemento].nombre + "</td><td><a id='" + datosC[elemento].id + "'nombre='" + datosC[elemento].nombre + "' class='btn btn-primary' onclick='getDatos(this); return false;'><span class='fas fa-edit' aria-hidden='true'></span></a></td></tr>";
@@ -136,7 +142,7 @@
                 })
                 .catch(error => console.log(error));
             //OBTIENE TODAS LAS CATEGORIAS.
-            axios.post("http://localhost:9000/GetProducto/", "")
+            axios.post("http://localhost:9000/GetProducto/", obj)
                 .then(response => {
                     const datosC = response.data;
                     for (var elemento in datosC) {
@@ -151,6 +157,7 @@
             var obj = new Object();
             obj.idProducto = idProducto;
             obj.cantidad = cantidad;
+            obj.sede = sede;
             axios.post("http://localhost:9000/AgregaProductoInventario/", obj)
                 .then(response => {
                     alertify.success("Dato agregado correctamente.");

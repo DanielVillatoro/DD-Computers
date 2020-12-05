@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@using System.Data;
+<!DOCTYPE html>
 <html>
 <head>
     <title>Vendedor</title>
@@ -76,6 +78,7 @@
     <script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
     <script src="~/js/fontawesome.js"></script>
     <script>
+        var sede = @Context.Session.GetString("sede");
         const guardarCambio = (id) => {
             var idCambio = id;
             id = "#input" + id;
@@ -85,6 +88,7 @@
             var obj = new Object();
             obj.id = idCambio;
             obj.nombre = valor;
+            obj.sede = sede;
             axios.post("http://localhost:9000/UpdateCategoria/", obj)
                 .then(response => {
                     alertify.success("Dato cambiado correctamente.");
@@ -93,9 +97,11 @@
                 .catch(error => console.log(error));
         };
         $(window).load(function () {
+            var obj = new Object();
+            obj.sede = sede;
             //console.log('1212');
             //OBTIENE TODAS LAS CATEGORIAS.
-            axios.post("http://localhost:9000/GetCategoria/", "")
+            axios.post("http://localhost:9000/GetCategoria/", obj)
                 .then(response => {
                     const datosC = response.data;
                     var html = "";
@@ -127,6 +133,7 @@
             var valor = $("#inputProducto").val();
             var obj = new Object();
             obj.nombre = valor;
+            obj.sede = sede;
             axios.post("http://localhost:9000/CreaCategoria/", obj)
                 .then(response => {
                     alertify.success("Dato agregado correctamente.");

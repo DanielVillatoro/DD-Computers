@@ -14,5 +14,16 @@ namespace ComputersDD.Controllers
         {
             return View();
         }
+
+        public ActionResult Limon()
+        {
+            HttpContext.Session.SetString("sede", "1");
+            return RedirectToAction("Index", "Shop");
+        }
+        public ActionResult Cartago()
+        {
+            HttpContext.Session.SetString("sede", "2");
+            return RedirectToAction("Index", "Shop");
+        }
     }
 }

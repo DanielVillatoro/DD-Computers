@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@using System.Data;
+<!DOCTYPE html>
 <html>
 <head>
     <title>Vendedor</title>
@@ -138,17 +140,20 @@
     <script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
     <script src="~/js/fontawesome.js"></script>
     <script>
+        var sede = @Context.Session.GetString("sede");
         $(window).load(function () {
+            var obj = new Object();
+            obj.sede = sede;
             //OBTIENE TODAS LAS CATEGORIAS.
-            axios.post("http://localhost:9000/GetTodoFactura/", "")
+            axios.post("http://localhost:9000/GetTodoFactura/", obj)
                 .then(response => {
                     const datosC = response.data;
                     var html = "";
                     for (var elemento in datosC) {
-                        html += "<tr><td><b>"+ datosC[elemento].id + "</b></td>";
-                        html += "<td>"+ datosC[elemento].nombre + "</td>";
-                        html += "<td> $"+ formatNumber.new(datosC[elemento].total) + "</td>";
-                        html += "<td>"+ datosC[elemento].fecha + "</td>";
+                        html += "<tr><td><b>" + datosC[elemento].id + "</b></td>";
+                        html += "<td>" + datosC[elemento].nombre + "</td>";
+                        html += "<td> $" + formatNumber.new(datosC[elemento].total) + "</td>";
+                        html += "<td>" + datosC[elemento].fecha + "</td>";
                         html += "<td><button class='btn btn-primary' id='" + datosC[elemento].id + "' onclick='ver(this.id)'>Ver</button></td></tr > ";
                         //html += "<tr><td>" + datosC[elemento].nombre + "</td><td><a id='" + datosC[elemento].id + "'nombre='" + datosC[elemento].nombre + "' class='btn btn-primary' onclick='getDatos(this); return false;'><span class='fas fa-edit' aria-hidden='true'></span></a></td></tr>";
                     }
@@ -167,7 +172,7 @@
                 })
                 .catch(error => console.log(error));
             //OBTIENE TODAS LOS CLIENTES.
-            axios.post("http://localhost:9000/GetCliente/", "")
+            axios.post("http://localhost:9000/GetCliente/", obj)
                 .then(response => {
                     const datosC = response.data;
                     for (var elemento in datosC) {
@@ -179,15 +184,16 @@
         const ver = (id) => {
             var obj = new Object();
             obj.id = id;
+            obj.sede = sede;
             axios.post("http://localhost:9000/GetFacturaDetalle/", obj)
                 .then(response => {
                     const datosC = response.data;
                     var html = "";
                     for (var elemento in datosC) {
-                        html += "<tr><td>"+ datosC[elemento].nombre + "</td>";
-                        html += "<td>"+ datosC[elemento].cantidad + "</td>";
-                        html += "<td> $"+ formatNumber.new(datosC[elemento].precio) + "</td>";
-                        html += "<td> $"+ formatNumber.new(datosC[elemento].total) + "</td>";
+                        html += "<tr><td>" + datosC[elemento].nombre + "</td>";
+                        html += "<td>" + datosC[elemento].cantidad + "</td>";
+                        html += "<td> $" + formatNumber.new(datosC[elemento].precio) + "</td>";
+                        html += "<td> $" + formatNumber.new(datosC[elemento].total) + "</td>";
                     }
                     $("#bodyTableDetalle").html(html);
                     $("#miModal").modal("show");
@@ -210,21 +216,22 @@
             if (idCliente == "Seleccionar") {
                 idCliente = '';
             }
-            var  fecha= $("#fecha").val();
-            var  idFactura= $("#numFactura").val();
+            var fecha = $("#fecha").val();
+            var idFactura = $("#numFactura").val();
             var obj = new Object();
             obj.idCliente = idCliente;
             obj.fecha = fecha;
             obj.idFactura = idFactura;
+            obj.sede = sede;
             axios.post("http://localhost:9000/ConsultaFactura/", obj)
                 .then(response => {
                     const datosC = response.data;
                     var html = "";
                     for (var elemento in datosC) {
-                        html += "<tr><td><b>"+ datosC[elemento].id + "</b></td>";
-                        html += "<td>"+ datosC[elemento].nombre + "</td>";
-                        html += "<td> $"+ formatNumber.new(datosC[elemento].total) + "</td>";
-                        html += "<td>"+ datosC[elemento].fecha + "</td>";
+                        html += "<tr><td><b>" + datosC[elemento].id + "</b></td>";
+                        html += "<td>" + datosC[elemento].nombre + "</td>";
+                        html += "<td> $" + formatNumber.new(datosC[elemento].total) + "</td>";
+                        html += "<td>" + datosC[elemento].fecha + "</td>";
                         html += "<td><button class='btn btn-primary' id='" + datosC[elemento].id + "' onclick='ver(this.id)'>Ver</button></td></tr > ";
                         //html += "<tr><td>" + datosC[elemento].nombre + "</td><td><a id='" + datosC[elemento].id + "'nombre='" + datosC[elemento].nombre + "' class='btn btn-primary' onclick='getDatos(this); return false;'><span class='fas fa-edit' aria-hidden='true'></span></a></td></tr>";
                     }
@@ -234,24 +241,24 @@
         }
 
         var formatNumber = {
-    separador: ",", // separador para los miles
-    sepDecimal: '.', // separador para los decimales
-    formatear: function (num) {
-        num += '';
-        var splitStr = num.split('.');
-        var splitLeft = splitStr[0];
-        var splitRight = splitStr.length > 1 ? this.sepDecimal + splitStr[1] : '';
-        var regx = /(\d+)(\d{3})/;
-        while (regx.test(splitLeft)) {
-            splitLeft = splitLeft.replace(regx, '$1' + this.separador + '$2');
+            separador: ",", // separador para los miles
+            sepDecimal: '.', // separador para los decimales
+            formatear: function (num) {
+                num += '';
+                var splitStr = num.split('.');
+                var splitLeft = splitStr[0];
+                var splitRight = splitStr.length > 1 ? this.sepDecimal + splitStr[1] : '';
+                var regx = /(\d+)(\d{3})/;
+                while (regx.test(splitLeft)) {
+                    splitLeft = splitLeft.replace(regx, '$1' + this.separador + '$2');
+                }
+                return this.simbol + splitLeft + splitRight;
+            },
+            new: function (num, simbol) {
+                this.simbol = simbol || '';
+                return this.formatear(num);
+            }
         }
-        return this.simbol + splitLeft + splitRight;
-    },
-    new: function (num, simbol) {
-        this.simbol = simbol || '';
-        return this.formatear(num);
-    }
-}
     </script>
 </body>
 </html>
