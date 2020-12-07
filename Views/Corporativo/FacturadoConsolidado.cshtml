@@ -43,15 +43,26 @@
 
     <!-- Page Content -->
     <div class="container">
-        <h1 class="mt-4">Inventario de productos</h1>
+        <h1 class="mt-4">Facturado consolidado.</h1>
         <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-3">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroupPrependNombre"><strong>Nombre Producto:</strong></span>
+                        <span class="input-group-text" id="inputGroupPrependNombre"><strong>Del:</strong></span>
                     </div>
-                    <input id="nombre"
-                           type="text"
+                    <input id="fecha1"
+                           type="date"
+                           class="form-control"
+                           aria-describedby="inputGroupPrependNombre" />
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupPrependNombre"><strong>Al:</strong></span>
+                    </div>
+                    <input id="fecha2"
+                           type="date"
                            class="form-control"
                            aria-describedby="inputGroupPrependNombre" />
                 </div>
@@ -70,33 +81,29 @@
                 <button class="btn btn-outline-secondary" onclick="buscar()">Buscar</button>
             </div>
         </div>
-        <h2>Sede: Limón</h2>
+        <p>Total por producto</p>
         <div class="table-responsive">
             <table class="table table-hover" id="limon">
                 <thead>
                     <tr>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Categoría</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Precio</th>
+                        <th scope="col">Producto</th>
+                        <th scope="col">Total</th>
                     </tr>
                 </thead>
-                <tbody id="bodyTableLimon">
+                <tbody id="bodyTableProducto">
                 </tbody>
             </table>
         </div>
-        <h2>Sede: Cartago</h2>
+        <p>Total por categoría</p>
         <div class="table-responsive">
-            <table class="table table-hover" id="cartago">
+            <table class="table table-hover" id="limon">
                 <thead>
                     <tr>
-                        <th scope="col">Nombre</th>
                         <th scope="col">Categoría</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Precio</th>
+                        <th scope="col">Total</th>
                     </tr>
                 </thead>
-                <tbody id="bodyTableCartago">
+                <tbody id="bodyTableCategoria">
                 </tbody>
             </table>
         </div>
@@ -133,41 +140,63 @@
             if (idCategoria == "Seleccionar") {
                 idCategoria = '';
             }
-            var nombre = $("#nombre").val();
             var obj = new Object();
             obj.idCategoria = idCategoria;
-            obj.nombre = nombre;
             obj.sede = "1";
             var obj2 = new Object();
             obj2.idCategoria = idCategoria;
-            obj2.nombre = nombre;
             obj2.sede = "2";
-            axios.post("http://localhost:9000/CorporativoGetInventario/", obj)
+            axios.post("http://localhost:9000/CorporativoTotalFacturadoProducto/", obj)
                 .then(response => {
-                    const datosC = response.data;
+                    const datosProducto = response.data;
                     var html = "";
-                    for (var elemento in datosC) {
-                        html += "<tr><td><b>" + datosC[elemento].nombre + "</b></td>";
-                        html += "<td>" + datosC[elemento].categoria + "</td>";
-                        html += "<td>" + datosC[elemento].cantidad + "</td>";
-                        html += "<td> $" + formatNumber.new(datosC[elemento].precio) + "</td></tr>";
-                    }
-                    $("#bodyTableLimon").html(html);
+                    axios.post("http://localhost:9000/CorporativoTotalFacturadoProducto/", obj2)
+                        .then(response => {
+                            const datosCategoria = response.data;
+                            var producto = null;
+                            var precio = null;
+                            for (var elemento in datosProducto) {
+                                producto = datosProducto[elemento].nombre;
+                                precio = parseFloat(datosProducto[elemento].total);
+                                for (var elemento2 in datosCategoria) {
+                                    if (datosCategoria[elemento2].nombre == producto) {
+                                        precio += parseFloat(datosCategoria[elemento2].total);
+                                    }
+                                }
+                                html += "<tr><td><b>" + producto + "</b></td>";
+                                html += "<td> $" + formatNumber.new(String(precio)) + "</td></tr>";
+                            }
+                            $("#bodyTableProducto").html(html);
+                        })
+                        .catch(error => console.log(error));
                 })
                 .catch(error => console.log(error));
-            axios.post("http://localhost:9000/CorporativoGetInventario/", obj2)
+            axios.post("http://localhost:9000/CorporativoTotalFacturadoCategoria/", obj)
                 .then(response => {
-                    const datosC = response.data;
+                    const datosProducto = response.data;
                     var html = "";
-                    for (var elemento in datosC) {
-                        html += "<tr><td><b>" + datosC[elemento].nombre + "</b></td>";
-                        html += "<td>" + datosC[elemento].categoria + "</td>";
-                        html += "<td>" + datosC[elemento].cantidad + "</td>";
-                        html += "<td> $" + formatNumber.new(datosC[elemento].precio) + "</td></tr>";
-                    }
-                    $("#bodyTableCartago").html(html);
+                    axios.post("http://localhost:9000/CorporativoTotalFacturadoCategoria/", obj2)
+                        .then(response => {
+                            const datosCategoria = response.data;
+                            var producto = null;
+                            var precio = null;
+                            for (var elemento in datosProducto) {
+                                producto = datosProducto[elemento].nombre;
+                                precio = parseFloat(datosProducto[elemento].total);
+                                for (var elemento2 in datosCategoria) {
+                                    if (datosCategoria[elemento2].nombre == producto) {
+                                        precio += parseFloat(datosCategoria[elemento2].total);
+                                    }
+                                }
+                                html += "<tr><td><b>" + producto + "</b></td>";
+                                html += "<td> $" + formatNumber.new(String(precio)) + "</td></tr>";
+                            }
+                            $("#bodyTableCategoria").html(html);
+                        })
+                        .catch(error => console.log(error));
                 })
                 .catch(error => console.log(error));
+
         }
 
         var formatNumber = {

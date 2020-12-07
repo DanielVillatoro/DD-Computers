@@ -16,5 +16,14 @@ namespace ComputersDD.Controllers
         {
             return View();
         }
+
+        public IActionResult FacturadoSucursal()
+        {
+            return View();
+        }
+        public IActionResult FacturadoConsolidado()
+        {
+            return View();
+        }
     }
 }
